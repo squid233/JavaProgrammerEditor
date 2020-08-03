@@ -1,0 +1,95 @@
+package io.github.squid233.javaprogrammereditor;
+
+import io.github.squid233.javaprogrammereditor.setting.Settings;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+/**
+ * @author squid233
+ */
+public class EditArea extends JTextArea {
+
+    // private static String[] buffer = {""};
+
+    JPopupMenu rightClick = new JPopupMenu();
+    JMenuItem revoke = new JMenuItem("撤销(U)"), cut = new JMenuItem("剪切(T)"), copy = new JMenuItem("复制(C)"), paste = new JMenuItem("粘贴(P)"),
+            delete = new JMenuItem("删除(D)");
+
+    public void init() {
+        if (Boolean.parseBoolean(Settings.SETTINGS.getProperty(Settings.USE_DARK_THEME))) {
+            this.setBackground(Color.decode("#2B2B2B"));
+        }
+        this.setFont(new Font("Consolas", Font.PLAIN, 16));
+        this.setComponentPopupMenu(rightClick);
+        /// rightClick.add(revoke);
+        rightClick.addSeparator();
+        rightClick.add(cut); rightClick.add(copy); rightClick.add(paste); rightClick.add(delete);
+        revoke.setMnemonic(KeyEvent.VK_U);
+        cut.setMnemonic(KeyEvent.VK_T);
+        copy.setMnemonic(KeyEvent.VK_C);
+        paste.setMnemonic(KeyEvent.VK_P);
+        delete.setMnemonic(KeyEvent.VK_D);
+        initListeners();
+        this.add(rightClick);
+    }
+
+    private void initListeners() {
+        cut.addActionListener(this::action);
+        copy.addActionListener(this::action);
+        paste.addActionListener(this::action);
+        delete.addActionListener(this::action);
+    }
+
+    public void action(ActionEvent e) {
+        String str = e.getActionCommand();
+        // 复制
+        if (str.equals(copy.getText())) {
+            this.copy();
+        }
+        // 粘贴
+        else if (str.equals(paste.getText())) {
+            this.paste();
+        }
+        // 剪切
+        else if (str.equals(cut.getText())) {
+            this.cut();
+        }
+        // 删除
+        else if (str.equals(delete.getText())) {
+            this.delete();
+        }
+    }
+
+    public boolean isClipboardString() {
+        boolean b = false;
+        Clipboard clipboard = this.getToolkit().getSystemClipboard();
+        Transferable content = clipboard.getContents(this);
+        try {
+            if (content.getTransferData(DataFlavor.stringFlavor) instanceof String) {
+                b = true;
+            }
+        } catch (Exception ignored) {
+        }
+        return b;
+    }
+
+    public boolean isCanCopy() {
+        boolean b = false;
+        int start = this.getSelectionStart();
+        int end = this.getSelectionEnd();
+        if (start != end) {
+            b = true;
+        }
+        return b;
+    }
+
+    public void delete() {
+        replaceRange("", this.getSelectionStart(), this.getSelectionEnd());
+    }
+}
