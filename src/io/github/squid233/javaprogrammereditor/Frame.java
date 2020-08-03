@@ -38,7 +38,7 @@ public class Frame extends JFrame {
             paste = new JMenuItem("粘贴(P)"),
             delete = new JMenuItem("删除(L)"),
             insertIndent = new JMenuItem("插入缩进（4格）(I)");
-    JMenuItem checkHelp = new JMenuItem("查看帮助(H)"),
+    JMenuItem viewHelp = new JMenuItem("查看帮助(H)"),
             about = new JMenuItem("About Java Programmer Editor");
     JScrollPane scrollPane = new JScrollPane();
     EditArea editArea = new EditArea();
@@ -57,7 +57,7 @@ public class Frame extends JFrame {
     private void addListeners() {
         editArea.addMouseListener(mouseListener);
         edit.addMouseListener(mouseListener);
-        checkHelp.addActionListener(e -> Browse.browse("https://scope-tech.github.io/jpe/help.html"));
+        viewHelp.addActionListener(e -> Browse.browse("https://scope-tech.github.io/jpe/help.html"));
         about.addActionListener(e ->
                 JOptionPane.showMessageDialog(this, TITLE + "\nMIT License开源\n源码请访问" + "https://github.com/squid233/JavaProgrammerEditor",
                         "关于“Java Programmer Editor”", JOptionPane.PLAIN_MESSAGE));
@@ -180,8 +180,8 @@ public class Frame extends JFrame {
         format.add(lineWrap);
         lineWrap.setMnemonic(VK_W);
         help.setMnemonic(VK_H);
-        help.add(checkHelp);
-        checkHelp.setMnemonic(VK_H);
+        help.add(viewHelp);
+        viewHelp.setMnemonic(VK_H);
         help.addSeparator();
         help.add(about);
         about.setMnemonic(VK_A);
