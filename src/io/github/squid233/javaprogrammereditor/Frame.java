@@ -8,8 +8,6 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.WindowEvent;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import static java.awt.event.KeyEvent.*;
 
@@ -63,29 +61,19 @@ public class Frame extends JFrame {
                         "关于“Java Programmer Editor”", JOptionPane.PLAIN_MESSAGE));
         lineWrap.addActionListener(e -> {
             if (!lineWrap.isSelected()) {
-                Settings.SETTINGS.setProperty(Settings.LINE_WRAP, Settings.FALSE);
-                try {
-                    Settings.SETTINGS.store(new FileWriter("settings.properties"), null);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
+                Settings.setSetting(Settings.LINE_WRAP, Settings.FALSE);
                 editArea.setLineWrap(false);
                 editArea.setWrapStyleWord(false);
                 scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             } else if (lineWrap.isSelected()) {
-                Settings.SETTINGS.setProperty(Settings.LINE_WRAP, Settings.TRUE);
-                try {
-                    Settings.SETTINGS.store(new FileWriter("settings.properties"), null);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
+                Settings.setSetting(Settings.LINE_WRAP, Settings.TRUE);
                 editArea.setCaretPosition(0);
                 editArea.setLineWrap(true);
                 editArea.setWrapStyleWord(true);
                 scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             }
         });
-        settings.addActionListener(e -> new SettingsFrame(this));
+        settings.addActionListener(e -> new SettingsDialog(this));
         exit.addActionListener(e -> this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         cut.addActionListener(e -> editArea.cut());
         copy.addActionListener(e -> editArea.copy());

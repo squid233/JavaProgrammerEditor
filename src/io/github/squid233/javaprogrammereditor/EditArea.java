@@ -25,7 +25,7 @@ public class EditArea extends JTextArea {
         if (Boolean.parseBoolean(Settings.SETTINGS.getProperty(Settings.USE_DARK_THEME))) {
             this.setBackground(Color.decode("#2B2B2B"));
         }
-        this.setFont(new Font("Consolas", Font.PLAIN, 16));
+        this.setFont(new Font(Settings.SETTINGS.getProperty(Settings.FONT), Font.PLAIN, 16));
         this.setComponentPopupMenu(rightClick);
         /// rightClick.add(revoke);
         rightClick.addSeparator();

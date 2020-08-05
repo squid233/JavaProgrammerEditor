@@ -12,12 +12,22 @@ public class Main {
     public static Frame frame;
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
         Settings.load();
+        try {
+            if (Settings.SETTINGS.getProperty(Settings.PROGRAM_LOOK_AND_FEEL).equals(Settings.PROGRAM_LOOK_AND_FEEL_DEFAULT)) {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } else {
+                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                    if (info.getName().equals(Settings.SETTINGS.getProperty(Settings.PROGRAM_LOOK_AND_FEEL))) {
+                        UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            System.out.println("Cannot set look and feel");
+            System.out.println("Cause by:" + e);
+        }
         frame = new Frame();
     }
 }
