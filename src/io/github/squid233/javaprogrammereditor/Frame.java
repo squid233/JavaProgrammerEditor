@@ -16,11 +16,9 @@ import static java.awt.event.KeyEvent.*;
  */
 public class Frame extends JFrame {
 
-    public static final String VERSION = "0.1.0-pre-alpha";
-    public static final String UPDATE_DATE = "2020-8-3";
-    public static final String BUILD_VERSION = "build.1";
     private static final String HYPHEN = " - ";
-    private static final String TITLE = "Java Programmer Editor v" + VERSION + " [By:squid233] 2020" + " Insider Version:[" + UPDATE_DATE + "+" + BUILD_VERSION + "]";
+    private static final String TITLE = "Java Programmer Editor v" +
+            Main.VERSION + " [By:squid233] 2020" + " Insider Version:[" + Main.UPDATE_DATE + "+" + Main.BUILD_VERSION + "]";
 
     MouseListener mouseListener = new MouseListener();
     JMenuBar menuBar = new JMenuBar();
@@ -29,7 +27,8 @@ public class Frame extends JFrame {
             format = new JMenu("格式(O)"),
             help = new JMenu("帮助(H)");
     JCheckBoxMenuItem lineWrap = new JCheckBoxMenuItem("自动换行(W)");
-    JMenuItem settings = new JMenuItem("设置(T)"),
+    JMenuItem font = new JMenuItem("字体(F)...");
+    JMenuItem settings = new JMenuItem("设置(T)..."),
             exit = new JMenuItem("退出(X)");
     JMenuItem cut = new JMenuItem("剪切(T)"),
             copy = new JMenuItem("复制(C)"),
@@ -40,7 +39,7 @@ public class Frame extends JFrame {
             about = new JMenuItem("About Java Programmer Editor");
     JScrollPane scrollPane = new JScrollPane();
     EditArea editArea = new EditArea();
-    boolean isLineWrap = Boolean.parseBoolean(Settings.SETTINGS.getProperty(Settings.LINE_WRAP));
+    boolean isLineWrap = Settings.getSettingB(Settings.LINE_WRAP);
 
     public Frame() {
         super("无标题" + HYPHEN + TITLE);
@@ -73,7 +72,7 @@ public class Frame extends JFrame {
                 scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             }
         });
-        settings.addActionListener(e -> new SettingsDialog(this));
+        settings.addActionListener(e -> SettingsDialog.open(this));
         exit.addActionListener(e -> this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         cut.addActionListener(e -> editArea.cut());
         copy.addActionListener(e -> editArea.copy());
@@ -88,6 +87,7 @@ public class Frame extends JFrame {
                 ee.printStackTrace();
             }
         });
+        font.addActionListener(e -> FontDialog.open(this));
     }
 
     private void init() {
@@ -166,6 +166,8 @@ public class Frame extends JFrame {
         insertIndent.setAccelerator(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK));
         format.setMnemonic(VK_O);
         format.add(lineWrap);
+        format.add(font);
+        font.setMnemonic(VK_F);
         lineWrap.setMnemonic(VK_W);
         help.setMnemonic(VK_H);
         help.add(viewHelp);

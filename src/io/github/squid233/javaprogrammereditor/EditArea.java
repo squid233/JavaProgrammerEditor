@@ -22,10 +22,9 @@ public class EditArea extends JTextArea {
             delete = new JMenuItem("删除(D)");
 
     public void init() {
-        if (Boolean.parseBoolean(Settings.SETTINGS.getProperty(Settings.USE_DARK_THEME))) {
-            this.setBackground(Color.decode("#2B2B2B"));
-        }
-        this.setFont(new Font(Settings.SETTINGS.getProperty(Settings.FONT), Font.PLAIN, 16));
+        this.setBackground(Color.decode(Settings.getSetting(Settings.BACKGROUND_COLOR)));
+        //noinspection MagicConstant
+        this.setFont(new Font(Settings.getSetting(Settings.FONT), Settings.getFontStyle(), Settings.getSettingI(Settings.FONT_SIZE)));
         this.setComponentPopupMenu(rightClick);
         /// rightClick.add(revoke);
         rightClick.addSeparator();

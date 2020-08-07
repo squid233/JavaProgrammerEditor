@@ -1,6 +1,7 @@
 package io.github.squid233.javaprogrammereditor;
 
 import io.github.squid233.javaprogrammereditor.setting.Settings;
+import io.github.squid233.javaprogrammereditor.util.DialogUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,33 +11,23 @@ import java.awt.*;
  */
 public class SettingsDialog extends JDialog {
 
-    JLabel setLook = new JLabel("请选择要设置的外观：");
+    private static SettingsDialog instance;
+
     JComboBox<String> lookAndFeelInfo;
     JList<String> lookAndFeels;
-    JPanel panel = new JPanel();
-    JPanel controlPanel = new JPanel();
-    JButton lookB = new JButton("外观");
-    JButton themeB = new JButton("主题");
-    CardLayout cardLayout = new CardLayout();
-    GridBagLayout bagLayout = new GridBagLayout();
-    GridBagConstraints constraints = new GridBagConstraints();
+    JTabbedPane panel = new JTabbedPane();
+    JPanel lookP = new JPanel(), themeP = new JPanel();
 
     public SettingsDialog(JFrame parent) {
         super(parent, "设置", true);
         init();
         addListeners();
-        if ((parent.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
-            /* parent.getWidth() / 2 + parent.getWidth() / 3, parent.getHeight() - 8 - 8 */
-            this.setSize((parent.getWidth() >> 1) + parent.getWidth() / 3, parent.getHeight() - 16);
-        } else {
-            this.setSize((parent.getWidth() >> 1) + (parent.getWidth() >> 2), parent.getHeight());
-        }
-        this.setLocationRelativeTo(parent);
         this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-        this.setVisible(true);
+        DialogUtil.init(parent, this, 3);
     }
 
     private void init() {
+        this.add(panel);
         int lafLength = UIManager.getInstalledLookAndFeels().length + 1;
         String[] lafNames = new String[lafLength];
         lafNames[0] = "System Default";
@@ -51,43 +42,38 @@ public class SettingsDialog extends JDialog {
          * }
          */
         System.arraycopy(lafNames, 1, lafNamesRemoveDefault, 0, lafNames.length - 1);
-        JLabel installedLook = new JLabel("已安装的外观：");
-        JPanel lookP = new JPanel();
+        JLabel installedLook = new JLabel("已安装的外观");
+        JLabel setLook = new JLabel("请选择要设置的外观：");
         lookAndFeelInfo = new JComboBox<>(lafNames);
         lookAndFeels = new JList<>(lafNamesRemoveDefault);
-
-        panel.setLayout(cardLayout);
-        panel.add("look", lookP);
-
+        GridBagLayout bagLayout = new GridBagLayout();
+        GridBagConstraints lookC = new GridBagConstraints();
         lookP.setLayout(bagLayout);
         lookP.add(installedLook);
         lookP.add(lookAndFeels);
         lookP.add(setLook);
         lookP.add(lookAndFeelInfo);
 
-        constraints.fill = GridBagConstraints.BOTH;
+        lookC.fill = GridBagConstraints.BOTH;
 
-        constraints.gridwidth = 0;
-        constraints.weightx = 0;
-        constraints.weighty = 0;
-        bagLayout.setConstraints(installedLook, constraints);
+        lookC.gridwidth = 0;
+        lookC.weightx = 1;
+        lookC.weighty = 0;
+        bagLayout.setConstraints(installedLook, lookC);
 
-        constraints.gridwidth = 1;
-        constraints.weighty = 1;
-        bagLayout.setConstraints(lookAndFeels, constraints);
+        lookC.gridwidth = 1;
+        lookC.weighty = 1;
+        bagLayout.setConstraints(lookAndFeels, lookC);
 
-        constraints.weighty = 0;
-        bagLayout.setConstraints(setLook, constraints);
+        lookC.weightx = 0;
+        lookC.weighty = 0;
+        bagLayout.setConstraints(setLook, lookC);
 
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.gridwidth = 0;
-        bagLayout.setConstraints(lookAndFeelInfo, constraints);
+        lookC.fill = GridBagConstraints.NONE;
+        bagLayout.setConstraints(lookAndFeelInfo, lookC);
 
-        controlPanel.add(lookB);
-        controlPanel.add(themeB);
-
-        this.add(panel, BorderLayout.CENTER);
-        this.add(controlPanel, BorderLayout.NORTH);
+        panel.addTab("外观", null, lookP, "look");
+        panel.addTab("主题", null, themeP, "theme");
 
         lookAndFeelInfo.setSelectedItem(UIManager.getLookAndFeel().getName());
         lookAndFeelInfo.updateUI();
@@ -95,22 +81,22 @@ public class SettingsDialog extends JDialog {
     }
 
     private void init2() {
-
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints themeC = new GridBagConstraints();
+        themeP.setLayout(layout);
     }
 
     private void addListeners() {
-        lookB.addActionListener(e -> cardLayout.show(panel, "look"));
-        themeB.addActionListener(e -> cardLayout.show(panel, "theme"));
         lookAndFeelInfo.addItemListener(e -> {
             String systemDefault = "System Default";
             Settings.setSetting(Settings.PROGRAM_LOOK_AND_FEEL, (String) lookAndFeelInfo.getSelectedItem());
             try {
-                if (systemDefault.equals(Settings.SETTINGS.getProperty(Settings.PROGRAM_LOOK_AND_FEEL))) {
+                if (systemDefault.equals(Settings.getSetting(Settings.PROGRAM_LOOK_AND_FEEL))) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     Settings.setSetting(Settings.PROGRAM_LOOK_AND_FEEL, Settings.PROGRAM_LOOK_AND_FEEL_DEFAULT);
                 } else {
                     for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                        if (info.getName().equals(Settings.SETTINGS.getProperty(Settings.PROGRAM_LOOK_AND_FEEL))) {
+                        if (info.getName().equals(Settings.getSetting(Settings.PROGRAM_LOOK_AND_FEEL))) {
                             UIManager.setLookAndFeel(info.getClassName());
                             break;
                         }
@@ -123,5 +109,13 @@ public class SettingsDialog extends JDialog {
             SwingUtilities.updateComponentTreeUI(Main.frame);
             SwingUtilities.updateComponentTreeUI(this);
         });
+    }
+
+    public static void open(JFrame parent) {
+        if (instance == null) {
+            instance = new SettingsDialog(parent);
+        } else {
+            DialogUtil.init(parent, instance, 3);
+        }
     }
 }
