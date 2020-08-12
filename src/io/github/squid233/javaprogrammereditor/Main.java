@@ -10,9 +10,9 @@ import javax.swing.*;
 public class Main {
 
     public static Frame frame;
-    public static final String VERSION = "0.1.0-pre-alpha";
-    public static final String UPDATE_DATE = "2020-8-3";
-    public static final String BUILD_VERSION = "build.1";
+    public static final String VERSION = "0.2.0-pre-alpha";
+    public static final String UPDATE_DATE = "2020-8-8";
+    public static final String BUILD_VERSION = "build.2";
 
     public static void main(String[] args) {
         Settings.load();
@@ -28,8 +28,7 @@ public class Main {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            System.out.println("Cannot set look and feel");
-            System.out.println("Cause by:" + e);
+            System.out.println("Cannot set look and feel cause by: " + e);
         }
         frame = new Frame();
     }

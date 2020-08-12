@@ -24,16 +24,16 @@ public class MouseListener implements MouseInputListener {
         }
 
         if (button == MouseEvent.BUTTON3) {
-            frame.editArea.copy.setEnabled(frame.editArea.isCanCopy());
-            frame.editArea.paste.setEnabled(frame.editArea.isClipboardString());
-            frame.editArea.cut.setEnabled(frame.editArea.isCanCopy());
-            frame.editArea.delete.setEnabled(frame.editArea.isCanCopy());
+            frame.editArea.copy.setEnabled(frame.editArea.canCopy());
+            frame.editArea.paste.setEnabled(frame.editArea.isClipboardHasString());
+            frame.editArea.cut.setEnabled(frame.editArea.canCopy());
+            frame.editArea.delete.setEnabled(frame.editArea.canCopy());
             frame.editArea.rightClick.show(frame.editArea, e.getX(), e.getY());
         } else if (button == MouseEvent.BUTTON1) {
-            frame.cut.setEnabled(frame.editArea.isCanCopy());
-            frame.copy.setEnabled(frame.editArea.isCanCopy());
-            frame.paste.setEnabled(frame.editArea.isClipboardString());
-            frame.delete.setEnabled(frame.editArea.isCanCopy());
+            frame.cut.setEnabled(frame.editArea.canCopy());
+            frame.copy.setEnabled(frame.editArea.canCopy());
+            frame.paste.setEnabled(frame.editArea.isClipboardHasString());
+            frame.delete.setEnabled(frame.editArea.canCopy());
         }
     }
 

@@ -1,19 +1,17 @@
 package io.github.squid233.javaprogrammereditor;
 
 import io.github.squid233.javaprogrammereditor.setting.Settings;
+import io.github.squid233.javaprogrammereditor.util.ExtendedTextArea;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /**
  * @author squid233
  */
-public class EditArea extends JTextArea {
+public class EditArea extends ExtendedTextArea {
 
     // private static String[] buffer = {""};
 
@@ -63,32 +61,5 @@ public class EditArea extends JTextArea {
         else if (str.equals(delete.getText())) {
             this.delete();
         }
-    }
-
-    public boolean isClipboardString() {
-        boolean b = false;
-        Clipboard clipboard = this.getToolkit().getSystemClipboard();
-        Transferable content = clipboard.getContents(this);
-        try {
-            if (content.getTransferData(DataFlavor.stringFlavor) instanceof String) {
-                b = true;
-            }
-        } catch (Exception ignored) {
-        }
-        return b;
-    }
-
-    public boolean isCanCopy() {
-        boolean b = false;
-        int start = this.getSelectionStart();
-        int end = this.getSelectionEnd();
-        if (start != end) {
-            b = true;
-        }
-        return b;
-    }
-
-    public void delete() {
-        replaceRange("", this.getSelectionStart(), this.getSelectionEnd());
     }
 }
